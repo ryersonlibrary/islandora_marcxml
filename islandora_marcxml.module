@@ -28,7 +28,7 @@ function islandora_marcxml_menu() {
 }
 
 /**
- * Download the output as XML.
+ * Delivery callback used to download the output as XML.
  */
 function islandora_marcxml_xml_download($output) {
   drupal_add_http_header('Content-type', 'text/xml;charset=utf8');
@@ -40,6 +40,12 @@ function islandora_marcxml_xml_download($output) {
   drupal_page_footer();
 }
 
+/**
+ * Access callback.
+ *
+ * Requires that the given object contains a MODS datastream (and to be
+ * viewable, as per the stock permissions).
+ */
 function islandora_marcxml_access_callback($object) {
   if (!$object) {
     return FALSE;
