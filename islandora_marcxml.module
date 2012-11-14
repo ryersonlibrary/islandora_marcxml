@@ -10,7 +10,8 @@ function islandora_marcxml_menu() {
       'type' => MENU_LOCAL_TASK,
       'page callback' => 'islandora_marcxml_view',
       'page arguments' => array(2),
-      'access callback' => TRUE,
+      'access callback' => 'islandora_marcxml_access_callback',
+      'access arguments' => array(2),
       'file' => 'islandora_marcxml.inc',
     ),
     'islandora/object/%islandora_object/download/mods_as_marcxml' => array(
@@ -18,7 +19,8 @@ function islandora_marcxml_menu() {
       'type' => MENU_CALLBACK,
       'page callback' => 'islandora_marcxml_transform_mods_to_marcxml',
       'page arguments' => array(2),
-      'access callback' => TRUE,
+      'access callback' => 'islandora_marcxml_access_callback',
+      'access arguments' => array(2),
       'delivery callback' => 'islandora_marcxml_xml_download',
       'file' => 'islandora_marcxml.inc',
     ),
@@ -36,4 +38,12 @@ function islandora_marcxml_xml_download($output) {
   print $output;
 
   drupal_page_footer();
+}
+
+function islandora_marcxml_access_callback($object) {
+  if (!$object) {
+    return FALSE;
+  }
+
+  return user_access(FEDORA_VIEW) && isset($object['MODS']);
 }
