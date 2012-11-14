@@ -5,77 +5,35 @@
  */
 function islandora_marcxml_menu() {
   return array(
-    'islandora/ingest/%islandora_object/islandora_marcxml' => array(
-      'title' => 'MARCXML Upload and Ingest',
-      'type' => MENU_CALLBACK,
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('islandora_marcxml_ingest_form', 2),
-      'file' => 'islandora_marcxml.inc',
-    ),
-    'islandora/object/%islandora_object/export_marcxml' => array(
-      'title' => 'MARCXML Export',
-      'type' => MENU_CALLBACK,
-      'page callback' => ''
+    'islandora/object/%islandora_object/view/mods_as_marcxml' => array(
+      'title' => 'MARCXML',
+      'type' => MENU_LOCAL_TASK,
+      'page callback' => 'islandora_marcxml_view',
       'page arguments' => array(2),
       'access callback' => TRUE,
+      'file' => 'islandora_marcxml.inc',
+    ),
+    'islandora/object/%islandora_object/download/mods_as_marcxml' => array(
+      'title' => 'Download MARCXML',
+      'type' => MENU_CALLBACK,
+      'page callback' => 'islandora_marcxml_transform_mods_to_marcxml',
+      'page arguments' => array(2),
+      'access callback' => TRUE,
+      'delivery callback' => 'islandora_marcxml_xml_download',
       'file' => 'islandora_marcxml.inc',
     ),
   );
 }
 
 /**
- * Implements hook_islandora_ingest_registry().
+ * Download the output as XML.
  */
-function islandora_marcxml_islandora_ingest_registry($object) {
-  // Get the models from the COLLECTION_POLICY.
-  module_load_include('ingest.inc', 'islandora', 'includes/islandora');
-  $info = islandora_ingest_get_information($object);
+function islandora_marcxml_xml_download($output) {
+  drupal_add_http_header('Content-type', 'text/xml;charset=utf8');
+  drupal_add_http_header('Content-length', strlen($output));
+  drupal_add_http_header('Content-Disposition', 'attachment; filename="marc.xml"');
 
-  // Get the possible datastreams from each model.
-  module_load_include('inc', 'islandora', 'includes/datastream');
-  $datastreams = array();
-  foreach ($info['models'] as $model => $info) {
-    $model_object = islandora_load_object($model);
-    if (isset($model_object->{'DS-COMPOSITE-STREAM'}) {
-      islandora_get_defined_dsids_array($datastreams, $model_object->{'DS-COMPOSITE-STREAM'}->content);
-    }
-  }
+  print $output;
 
-  // If MODS is one of the possible datastreams, then return our registry entry.
-  if (array_key_exists('MODS', $datastream)) {
-    return array(
-      array(
-        'name' => t('MARCXML upload with MODS transformation'),
-        'url' => "islandora/ingest/{$object->pid}/islandora_marcxml",
-      ),
-    );
-  }
-}
-
-/**
- * Get the models possible inside the given collection object...
- *
- * The model must be able to take the specified datastream.
- */
-function islandora_marcxml_get_models($object, $datastream = 'MODS') {
-  module_load_include('ingest.inc', 'islandora', 'includes/islandora');
-  $info = islandora_ingest_get_information($object);
-
-  // Get the possible datastreams from each model.
-  module_load_include('inc', 'islandora', 'includes/datastream');
-  $models = array();
-  foreach ($info['models'] as $model => $info) {
-    $model_object = islandora_load_object($model);
-
-    if (isset($model_object['DS-COMPOSITE-STREAM']) {
-      $datastreams = array();
-      islandora_get_defined_dsids_array($datastreams, $model_object['DS-COMPOSITE-STREAM']->content);
-
-      if (in_array($datastream, $datastreams)) {
-        $models[$model] = $info['name'];
-      }
-    }
-  }
-
-  return $models;
+  drupal_page_footer();
 }

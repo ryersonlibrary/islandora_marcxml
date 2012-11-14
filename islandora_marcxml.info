@@ -1,6 +1,6 @@
 name = Islandora MARCXML
 description = "Allow the ingest and export of MARCXML anywhere MODS is supported."
-dependencies[] = islandora_solution_pack_collection
+dependencies[] = islandora
 package = Islandora
 version = 7.x-dev
 core = 7.x
