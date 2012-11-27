@@ -53,3 +53,25 @@ function islandora_marcxml_access_callback($object) {
 
   return user_access(FEDORA_VIEW) && isset($object['MODS']);
 }
+
+/**
+ * Implements hook_islandora_ingest_steps().
+ */
+function islandora_marcxml_islandora_ingest_steps(array $configuration) {
+  if (isset($configuration['models'])) {
+    $dsids = islandora_get_datastreams_requirements_from_models((array)$configuration['models']);
+    if (isset($dsids['MODS'])) {
+      return array(
+        array(
+          'type' => 'form',
+          'weight' => -5,
+          'form_id' => 'islandora_marcxml_file_form',
+          'args' => array(),
+          'file' => 'includes/file.form.inc',
+          'module' => 'islandora_marcxml',
+        ),
+      );
+    }
+  }
+}
+
