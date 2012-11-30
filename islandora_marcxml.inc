@@ -68,7 +68,7 @@ function islandora_marcxml_transform_marc_to_html($object) {
 function islandora_marcxml_view($object) {
   return array(
     'link' => array(
-      '#markup' => l(t('Download MARCXML'), "islandora/object/{$object->id}/download/mods_as_marcxml"),
+      '#markup' => l(t('Download MARCXML'), "islandora/object/{$object->id}/download_mods_as_marcxml"),
     ),
     'marc' => array(
       '#markup' => islandora_marcxml_transform_marc_to_html($object),
