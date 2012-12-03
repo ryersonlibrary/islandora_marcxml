@@ -9,17 +9,43 @@
 /**
  * Form building function.
  */
-function islandora_marcxml_file_form($form, &$form_state) {
-  $form['file'] = array(
-    '#type' => 'managed_file',
-    '#title' => t('MarcXML File'),
-    '#description' => t('A file containing a MarcXML record, to be ' .
-      'transformed to MODS.  Select no file to create a record from ' .
-      'scratch.'),
-    '#upload_validators' => array(
-      'file_validate_extensions' => array('xml'),
-    ),
-  );
+function islandora_marcxml_file_form(array $form, array &$form_state) {
+  module_load_include('inc', 'xml_form_builder', 'includes/select_association.form');
+
+  $content_model = array();
+  if (module_exists('xml_form_builder')) {
+    $metadata_step = xml_form_builder_get_metadata_step($form_state);
+    if (isset($metadata_step)) {
+      $association = $metadata_step['args'][0];
+
+      $content_model[] = $association['content_model'];
+    }
+  }
+  if (empty($content_model)) {
+    $config = islandora_ingest_form_get_configuration($form_state);
+    $content_model = isset($config['models'])?
+      $config['models']:
+      array();
+  }
+
+  $datastreams = islandora_get_datastreams_requirements_from_models((array)$content_model);
+  if (!isset($datastreams['MODS'])) {
+    $step = &islandora_ingest_form_get_step($form_state);
+    $step++;
+    $form_state['rebuild'] = TRUE;
+  }
+  else {
+    $form['file'] = array(
+      '#type' => 'managed_file',
+      '#title' => t('MarcXML File'),
+      '#description' => t('A file containing a MarcXML record, to be ' .
+       'transformed to MODS.  Select no file to create a record from ' .
+       'scratch.'),
+      '#upload_validators' => array(
+       'file_validate_extensions' => array('xml'),
+      ),
+    );
+  }
   return $form;
 }
 

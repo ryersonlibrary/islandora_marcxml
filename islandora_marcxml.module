@@ -64,7 +64,7 @@ function islandora_marcxml_islandora_ingest_steps(array $configuration) {
       return array(
         array(
           'type' => 'form',
-          'weight' => -5,
+          'weight' => 1,
           'form_id' => 'islandora_marcxml_file_form',
           'args' => array(),
           'file' => 'includes/file.form.inc',
