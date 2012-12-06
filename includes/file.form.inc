@@ -37,7 +37,11 @@ function islandora_marcxml_file_form_submit(&$form, &$form_state) {
   $file = file_load($form_state['values']['file']);
   if ($file) {
     $input_xml = file_get_contents($file->uri);
+
+    // To ensure the file is only used once, delete it.
     file_delete($file);
+    unset($form_state['values']['file']);
+
     $transformed_xml = trim(islandora_marcxml_run_xsl_transform(array(
       'xsl' => $xsl_path,
       'input' => $input_xml,
@@ -56,6 +60,9 @@ function islandora_marcxml_file_form_submit(&$form, &$form_state) {
       $ds = $object[$dsid];
     }
     $ds->content = $transformed_xml;
+
+    // Destroy object_form_storage, so new XML gets used.
+    unset($form_state['storage']['objective_form_storage']);
   }
 }
 
