@@ -58,10 +58,10 @@ function islandora_marcxml_access_callback($object) {
  * Implements hook_islandora_ingest_steps().
  */
 function islandora_marcxml_islandora_ingest_steps(array $form_state) {
-  $return_step = FALSE;
+  $return_step = NULL;
   $configuration = islandora_ingest_form_get_configuration($form_state);
 
-  if (!$return_step && module_exists('xml_form_builder')) {
+  if ($return_step === NULL && module_exists('xml_form_builder')) {
     // XXX:  Need a better way to determine the (potential list of) content
     //   models which are to be bound to an object...  Currently, the only way
     //   this is done is through the association selected in the form builder.
@@ -74,18 +74,18 @@ function islandora_marcxml_islandora_ingest_steps(array $form_state) {
     $association_storage = islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_association_step');
     if (isset($association_storage['association'])) {
       $dsids = islandora_get_datastreams_requirements_from_models((array)$association_storage['association']['content_model']);
-      $return_step = isset($dsids['MODS']);
+      $return_step = isset($dsids['MODS']) || ($association_storage['association']['dsid'] == 'MODS');
     }
   }
   
-  if (!$return_step && isset($configuration['models'])) {
+  if ($return_step === NULL && isset($configuration['models'])) {
     $dsids = islandora_get_datastreams_requirements_from_models((array)$configuration['models']);
     $return_step = isset($dsids['MODS']);
   }
 
   if ($return_step) {
     return array(
-      array(
+      'islandora_marcxml_upload' => array(
 	'type' => 'form',
 	'weight' => 1,
 	'form_id' => 'islandora_marcxml_file_form',
