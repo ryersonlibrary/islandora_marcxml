@@ -57,7 +57,7 @@ function islandora_marcxml_access_callback($object) {
 /**
  * Implements hook_islandora_ingest_steps().
  */
-function islandora_marcxml_islandora_ingest_steps(array $form_state) {
+function islandora_marcxml_islandora_ingest_steps_alter(&$steps, array $form_state) {
   $return_step = NULL;
   $configuration = islandora_ingest_form_get_configuration($form_state);
 
@@ -84,15 +84,13 @@ function islandora_marcxml_islandora_ingest_steps(array $form_state) {
   }
 
   if ($return_step) {
-    return array(
-      'islandora_marcxml_upload' => array(
-	'type' => 'form',
-	'weight' => 1,
-	'form_id' => 'islandora_marcxml_file_form',
-	'args' => array(),
-	'file' => 'includes/file.form.inc',
-	'module' => 'islandora_marcxml',
-      ),
+    $steps['islandora_marcxml_upload'] = array(
+      'type' => 'form',
+      'weight' => 1,
+      'form_id' => 'islandora_marcxml_file_form',
+      'args' => array(),
+      'file' => 'includes/file.form.inc',
+      'module' => 'islandora_marcxml',
     );
   }
 }
