@@ -51,7 +51,7 @@ function islandora_marcxml_access_callback($object) {
     return FALSE;
   }
 
-  return user_access(FEDORA_VIEW) && isset($object['MODS']);
+  return user_access(FEDORA_VIEW_OBJECTS) && isset($object['MODS']);
 }
 
 /**
