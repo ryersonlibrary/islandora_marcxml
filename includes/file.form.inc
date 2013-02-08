@@ -14,8 +14,8 @@ function islandora_marcxml_file_form(array $form, array &$form_state) {
 
   $form['file'] = array(
     '#type' => 'managed_file',
-    '#title' => t('MarcXML File'),
-    '#description' => t('A file containing a MarcXML record, to be ' .
+    '#title' => t('MARCXML File'),
+    '#description' => t('A file containing a MARCXML record, to be ' .
      'transformed to MODS.  Select no file to create a record from ' .
      'scratch.'),
     '#upload_validators' => array(
@@ -30,7 +30,7 @@ function islandora_marcxml_file_form(array $form, array &$form_state) {
  * Form submit handler.
  */
 function islandora_marcxml_file_form_submit(&$form, &$form_state) {
-  // Transform the MarcXML to MODS.
+  // Transform the MARCXML to MODS.
   module_load_include('inc', 'islandora_marcxml');
   $xsl_path = drupal_get_path('module', 'islandora_marcxml') . 
     '/xsl/MARC21slim2MODS3-4.xsl';
