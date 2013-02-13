@@ -31,8 +31,8 @@ function islandora_marcxml_file_form(array $form, array &$form_state) {
  */
 function islandora_marcxml_file_form_submit(&$form, &$form_state) {
   // Transform the MARCXML to MODS.
-  module_load_include('inc', 'islandora_marcxml');
-  $xsl_path = drupal_get_path('module', 'islandora_marcxml') . 
+  module_load_include('inc', 'islandora_marcxml', 'includes/utilities');
+  $xsl_path = drupal_get_path('module', 'islandora_marcxml') .
     '/xsl/MARC21slim2MODS3-4.xsl';
   $file = file_load($form_state['values']['file']);
   if ($file) {
@@ -65,4 +65,3 @@ function islandora_marcxml_file_form_submit(&$form, &$form_state) {
     unset($form_state['storage']['objective_form_storage']);
   }
 }
-
