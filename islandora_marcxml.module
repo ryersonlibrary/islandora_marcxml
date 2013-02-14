@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Defines all the hooks this module implements.
+ */
+
+/**
  * Implements hook_menu().
  */
 function islandora_marcxml_menu() {
@@ -29,14 +34,15 @@ function islandora_marcxml_menu() {
 
 /**
  * Delivery callback used to download the output as XML.
+ *
+ * @param string $output
+ *   The content to download.
  */
 function islandora_marcxml_xml_download($output) {
   drupal_add_http_header('Content-type', 'text/xml;charset=utf8');
   drupal_add_http_header('Content-length', strlen($output));
   drupal_add_http_header('Content-Disposition', 'attachment; filename="marc.xml"');
-
   print $output;
-
   drupal_page_footer();
 }
 
@@ -45,54 +51,34 @@ function islandora_marcxml_xml_download($output) {
  *
  * Requires that the given object contains a MODS datastream (and to be
  * viewable, as per the stock permissions).
+ *
+ * @param FedoraObject $object
+ *   The object to test, if NULL the given object doesn't exist or is
+ *   inaccessible.
+ *
+ * @return bool
+ *   TRUE if the user is allowed to access the marcxml interface, FALSE
+ *   otherwise.
  */
 function islandora_marcxml_access_callback($object) {
-  if (!$object) {
-    return FALSE;
-  }
-
-  return user_access(FEDORA_VIEW_OBJECTS) && isset($object['MODS']);
+  return is_object($object) && isset($object['MODS']) && user_access(FEDORA_VIEW_OBJECTS);
 }
 
 /**
- * Implements hook_islandora_ingest_steps().
+ * Implements hook_islandora_ingest_steps_alter().
  */
-function islandora_marcxml_islandora_ingest_steps(array $form_state) {
-  $return_step = NULL;
-  $configuration = islandora_ingest_form_get_configuration($form_state);
-
-  if ($return_step === NULL && module_exists('xml_form_builder')) {
-    // XXX:  Need a better way to determine the (potential list of) content
-    //   models which are to be bound to an object...  Currently, the only way
-    //   this is done is through the association selected in the form builder.
-
-    // XXX:  If there's only one association, there's a chance that this might
-    //   miss restricting based on it, as this hook implementation could be
-    //   called before the xml_form_builder one...
-
-    // Check that association permits the use of MODS.
-    $association_storage = islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_association_step');
-    if (isset($association_storage['association'])) {
-      $dsids = islandora_get_datastreams_requirements_from_models((array)$association_storage['association']['content_model']);
-      $return_step = isset($dsids['MODS']) || ($association_storage['association']['dsid'] == 'MODS');
+function islandora_marcxml_islandora_ingest_steps_alter(array &$steps, array &$form_state) {
+  if (isset($steps['xml_form_builder_metadata_step'])) {
+    $metadata_step_storage = islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
+    if (isset($metadata_step_storage['association']) && $metadata_step_storage['association']['dsid'] == 'MODS') {
+      $steps['islandora_marcxml_upload'] = array(
+        'type' => 'form',
+        'weight' => 1,
+        'form_id' => 'islandora_marcxml_file_form',
+        'args' => array(),
+        'file' => 'includes/file.form.inc',
+        'module' => 'islandora_marcxml',
+      );
     }
-  }
-
-  if ($return_step === NULL && isset($configuration['models'])) {
-    $dsids = islandora_get_datastreams_requirements_from_models((array)$configuration['models']);
-    $return_step = isset($dsids['MODS']);
-  }
-
-  if ($return_step) {
-    return array(
-      'islandora_marcxml_upload' => array(
-	'type' => 'form',
-	'weight' => 1,
-	'form_id' => 'islandora_marcxml_file_form',
-	'args' => array(),
-	'file' => 'includes/file.form.inc',
-	'module' => 'islandora_marcxml',
-      ),
-    );
   }
 }
