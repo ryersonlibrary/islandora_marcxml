@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
  * Implements hook_menu().
@@ -12,7 +12,7 @@ function islandora_marcxml_menu() {
       'page arguments' => array(2),
       'access callback' => 'islandora_marcxml_access_callback',
       'access arguments' => array(2),
-      'file' => 'islandora_marcxml.inc',
+      'file' => 'includes/utilities.inc',
     ),
     'islandora/object/%islandora_object/download_mods_as_marcxml' => array(
       'title' => 'Download MARCXML',
@@ -22,7 +22,7 @@ function islandora_marcxml_menu() {
       'access callback' => 'islandora_marcxml_access_callback',
       'access arguments' => array(2),
       'delivery callback' => 'islandora_marcxml_xml_download',
-      'file' => 'islandora_marcxml.inc',
+      'file' => 'includes/utilities.inc',
     ),
   );
 }
@@ -69,7 +69,7 @@ function islandora_marcxml_islandora_ingest_steps(array $form_state) {
     // XXX:  If there's only one association, there's a chance that this might
     //   miss restricting based on it, as this hook implementation could be
     //   called before the xml_form_builder one...
- 
+
     // Check that association permits the use of MODS.
     $association_storage = islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_association_step');
     if (isset($association_storage['association'])) {
@@ -77,7 +77,7 @@ function islandora_marcxml_islandora_ingest_steps(array $form_state) {
       $return_step = isset($dsids['MODS']) || ($association_storage['association']['dsid'] == 'MODS');
     }
   }
-  
+
   if ($return_step === NULL && isset($configuration['models'])) {
     $dsids = islandora_get_datastreams_requirements_from_models((array)$configuration['models']);
     $return_step = isset($dsids['MODS']);
@@ -96,4 +96,3 @@ function islandora_marcxml_islandora_ingest_steps(array $form_state) {
     );
   }
 }
-
