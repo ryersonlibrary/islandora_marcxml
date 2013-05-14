@@ -16,7 +16,7 @@ before_install:
   - ln -s $TRAVIS_BUILD_DIR sites/all/modules/islandora_marcxml
   - drush en --yes islandora_marcxml
 script:
-  - ant -buildfile sites/all/modules/islandora_marcxml/build.xml lint
+#  - ant -buildfile sites/all/modules/islandora_marcxml/build.xml lint
   - $ISLANDORA_DIR/tests/scripts/line_endings.sh sites/all/modules/islandora_marcxml
   - drush coder-review --reviews=production,security,style,i18n,potx,sniffer islandora_marcxml
   - phpcpd --names *.module,*.inc,*.test sites/all/modules/islandora_marcxml
