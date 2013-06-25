@@ -39,7 +39,7 @@ function islandora_marcxml_file_form(array $form, array &$form_state) {
  * @param array $form_state
  *   The Drupal form state.
  */
-function islandora_marcxml_file_form_submit(array $form, array $form_state) {
+function islandora_marcxml_file_form_submit(array &$form, array &$form_state) {
   module_load_include('inc', 'islandora_marcxml', 'includes/utilities');
   $file = file_load($form_state['values']['file']);
   if ($file) {
@@ -60,7 +60,7 @@ function islandora_marcxml_file_form_submit(array $form, array $form_state) {
  * @param array $form_state
  *   The Drupal form state.
  */
-function islandora_marcxml_file_form_undo_submit(array $form, array $form_state) {
+function islandora_marcxml_file_form_undo_submit(array &$form, array &$form_state) {
   $marcxml_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'islandora_marcxml_upload');
   $object = islandora_ingest_form_get_object($form_state);
   if (isset($marcxml_step_storage['created']['MODS']) && $marcxml_step_storage['created']['MODS']) {
