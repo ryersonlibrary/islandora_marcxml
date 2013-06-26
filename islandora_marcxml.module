@@ -70,7 +70,7 @@ function islandora_marcxml_access_callback($object) {
 function islandora_marcxml_islandora_ingest_steps_alter(array &$steps, array &$form_state) {
   if (isset($steps['xml_form_builder_metadata_step'])) {
     $association = isset($steps['xml_form_builder_metadata_step']['args'][0]) ? $steps['xml_form_builder_metadata_step']['args'][0] : NULL;
-    if ($association['dsid'] == 'MODS') {
+    if (isset($association['dsid']) && $association['dsid'] == 'MODS') {
       $steps['islandora_marcxml_upload'] = array(
         'type' => 'form',
         'weight' => 1,
