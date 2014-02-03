@@ -15,7 +15,7 @@
 			<xsl:apply-templates/>
 	</xsl:template>
 
-	<xsl:template match="mods:modsCollection">
+	<xsl:template match="//mods:mods[1]">
 		<marc:collection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/MARC21/slim http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd">
 			<xsl:apply-templates/>
 		</marc:collection>
@@ -165,7 +165,7 @@
 		</xsl:choose>		
 	</xsl:template>
 
-	<xsl:template match="mods:mods">
+	<xsl:template match="//mods:mods[1]">
 		<marc:record>
 			<marc:leader>
 				<!-- 00-04 -->				
