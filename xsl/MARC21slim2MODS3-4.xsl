@@ -6,8 +6,9 @@
 	<xsl:strip-space elements="*"/>
 
 	<!-- Maintenance note: For each revision, change the content of <recordInfo><recordOrigin> to reflect the new revision number.
-	MARC21slim2MODS3-4 (Revision 1.93) 20140131
+	MARC21slim2MODS3-4 (Revision 1.94) 20140221
 
+Revision 1.94 - Leader 07 b mapping changed from "continuing" to "serial" tmee 2014/02/21
 Revision 1.93 - Fixed personal name transform for ind1=0 tmee 2014/01/31
 Revision 1.92 - Removed duplicate code for 856 1.51 tmee tmee 2014/01/31
 Revision 1.91 - Fixed createnameFrom720 duplication tmee tmee 2014/01/31
@@ -853,6 +854,9 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
 					<xsl:value-of select="."/>
 				</edition>
 			</xsl:for-each>
+			
+			<!--1.94 -->
+			
 			<xsl:for-each select="marc:leader">
 				<issuance>
 					<xsl:choose>
@@ -865,7 +869,7 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
 							>multipart monograph</xsl:when>
 						<xsl:when test="$leader7='m' and ($leader19='#')">single unit</xsl:when>
 						<xsl:when test="$leader7='i'">integrating resource</xsl:when>
-						<xsl:when test="$leader7='s'">serial</xsl:when>
+						<xsl:when test="$leader7='b' or $leader7='s'">serial</xsl:when>
 					</xsl:choose>
 				</issuance>
 			</xsl:for-each>
@@ -2662,7 +2666,7 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
 			</xsl:for-each>
 
 			<recordOrigin>Converted from MARCXML to MODS version 3.4 using MARC21slim2MODS3-4.xsl
-				(Revision 1.93 2014/01/31)</recordOrigin>
+				(Revision 1.94 2014/02/21)</recordOrigin>
 
 			<xsl:for-each select="marc:datafield[@tag=040]/marc:subfield[@code='b']">
 				<languageOfCataloging>
