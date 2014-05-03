@@ -6,12 +6,15 @@
 	<xsl:strip-space elements="*"/>
 
 	<!-- Maintenance note: For each revision, change the content of <recordInfo><recordOrigin> to reflect the new revision number.
-	MARC21slim2MODS3-4 (Revision 1.94) 20140221
-
-Revision 1.94 - Leader 07 b mapping changed from "continuing" to "serial" tmee 2014/02/21
+	MARC21slim2MODS3-5 (Revision 1.96) 20140502
+	
+Revision 1.96 - Fixed 310 and 321 and 008 frequency authority for marcfrequency tmee 2014/04/22
+Revision 1.95 - Modified 035 to include identifier type (WlCaITV) tmee 2014/04/21	
+Revision 1.94 - Leader 07 b changed mapping from continuing to serial tmee 2014/02/21
+MODS 3.5 
 Revision 1.93 - Fixed personal name transform for ind1=0 tmee 2014/01/31
-Revision 1.92 - Removed duplicate code for 856 1.51 tmee tmee 2014/01/31
-Revision 1.91 - Fixed createnameFrom720 duplication tmee tmee 2014/01/31
+Revision 1.92 - Removed duplicate code for 856 1.51 tmee 2014/01/31
+Revision 1.91 - Fixed createnameFrom720 duplication tmee 2014/01/31
 Revision 1.90 - Fixed 520 displayLabel tmee tmee 2014/01/31
 Revision 1.89 - Fixed 008-06 when value = 's' for cartographics tmee tmee 2014/01/31
 Revision 1.88 - Fixed 510c mapping - tmee 2013/08/29
@@ -109,15 +112,15 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
 				<modsCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 					xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd">
 					<xsl:for-each select="//marc:collection/marc:record">
-						<mods version="3.4">
+						<mods version="3.5">
 							<xsl:call-template name="marcRecord"/>
 						</mods>
 					</xsl:for-each>
 				</modsCollection>
 			</xsl:when>
 			<xsl:otherwise>
-				<mods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.4"
-					xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-4.xsd">
+				<mods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.5"
+					xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd">
 					<xsl:for-each select="//marc:record">
 						<xsl:call-template name="marcRecord"/>
 					</xsl:for-each>
@@ -854,16 +857,12 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
 					<xsl:value-of select="."/>
 				</edition>
 			</xsl:for-each>
-			
-			<!--1.94 -->
-			
 			<xsl:for-each select="marc:leader">
 				<issuance>
 					<xsl:choose>
 						<xsl:when
 							test="$leader7='a' or $leader7='c' or $leader7='d' or $leader7='m'"
 							>monographic</xsl:when>
-						<xsl:when test="$leader7='b'">continuing</xsl:when>
 						<xsl:when
 							test="$leader7='m' and ($leader19='a' or $leader19='b' or $leader19='c')"
 							>multipart monograph</xsl:when>
@@ -873,8 +872,10 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
 					</xsl:choose>
 				</issuance>
 			</xsl:for-each>
+			
+			<!-- 1.96 20140422 -->
 			<xsl:for-each select="marc:datafield[@tag=310]|marc:datafield[@tag=321]">
-				<frequency authority="marcfrequency">
+				<frequency>
 					<xsl:call-template name="subfieldSelect">
 						<xsl:with-param name="codes">ab</xsl:with-param>
 					</xsl:call-template>
@@ -912,7 +913,7 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
 						</frequency>
 					</xsl:variable>
 					<xsl:if test="$frequency!=''">
-						<frequency>
+						<frequency authority="marcfrequency">
 							<xsl:value-of select="$frequency"/>
 						</frequency>
 					</xsl:if>
@@ -2507,6 +2508,16 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
 					select="normalize-space(substring-after(marc:subfield[@code='a'], '(OCoLC)'))"/>
 			</identifier>
 		</xsl:for-each>
+		
+		
+		<!-- 3.5 1.95 20140421 -->
+		<xsl:for-each
+			select="marc:datafield[@tag='035'][marc:subfield[@code='a'][contains(text(), '(WlCaITV)')]]">
+			<identifier type="WlCaITV">
+				<xsl:value-of
+					select="normalize-space(substring-after(marc:subfield[@code='a'], '(WlCaITV)'))"/>
+			</identifier>
+		</xsl:for-each>
 
 		<xsl:for-each select="marc:datafield[@tag='037']">
 			<identifier type="stock number">
@@ -2665,8 +2676,8 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
 				</recordIdentifier>
 			</xsl:for-each>
 
-			<recordOrigin>Converted from MARCXML to MODS version 3.4 using MARC21slim2MODS3-4.xsl
-				(Revision 1.94 2014/02/21)</recordOrigin>
+			<recordOrigin>Converted from MARCXML to MODS version 3.5 using MARC21slim2MODS3-5.xsl
+				(Revision 1.96 2014/05/02)</recordOrigin>
 
 			<xsl:for-each select="marc:datafield[@tag=040]/marc:subfield[@code='b']">
 				<languageOfCataloging>
@@ -3606,7 +3617,7 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
 					<xsl:value-of select="$sf06260b"/>
 				</xsl:when>
 			</xsl:choose>
-		</xsl:variable>
+		</xsl:variable>            
 
 		<xsl:variable name="x250">
 			<xsl:choose>
