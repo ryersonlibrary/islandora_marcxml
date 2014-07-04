@@ -63,7 +63,7 @@ function islandora_marcxml_xml_download($output) {
     drupal_page_footer();
   }
   else {
-    drupal_access_denied();
+    return MENU_ACCESS_DENIED;
   }
 }
 
