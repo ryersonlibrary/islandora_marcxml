@@ -36,16 +36,16 @@ function islandora_marcxml_menu() {
  * Implements hook_permission().
  */
 function islandora_marcxml_permission() {
-    return array(
-        'download marcxml metadata' => array(
-            'title' => t('Download MARCXML metadata'),
-            'description' => t('Download MARCXML metadata'),
-        ),
-        'view marcxml metadata' => array(
-            'title' => t('View MARCXML metadata'),
-            'description' => t('View MARCXML metadata'),
-        ),
-    );
+  return array(
+    'download marcxml metadata' => array(
+      'title' => t('Download MARCXML metadata'),
+      'description' => t('Download MARCXML metadata'),
+    ),
+    'view marcxml metadata' => array(
+      'title' => t('View MARCXML metadata'),
+      'description' => t('View MARCXML metadata'),
+    ),
+  );
 }
 
 /**
