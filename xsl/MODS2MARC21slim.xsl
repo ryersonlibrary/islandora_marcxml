@@ -1249,7 +1249,9 @@
 			<xsl:with-param name="tag">720</xsl:with-param>
 			<xsl:with-param name="subfields">
 				<marc:subfield code="a">
-					<xsl:value-of select="mods:namePart"/>
+					<xsl:call-template name="modsName">
+						<xsl:with-param name="namePart" select="mods:namePart"/>
+					</xsl:call-template>
 				</marc:subfield>
 			</xsl:with-param>
 		</xsl:call-template>	
@@ -1261,7 +1263,9 @@
 			<xsl:with-param name="ind1">1</xsl:with-param>
 			<xsl:with-param name="subfields">
 				<marc:subfield code="a">
-					<xsl:value-of select="mods:namePart"/>
+					<xsl:call-template name="modsName">
+						<xsl:with-param name="namePart" select="mods:namePart"/>
+					</xsl:call-template>
 				</marc:subfield><!-- v3 termsOfAddress -->
 				<xsl:for-each select="mods:namePart[@type='termsOfAddress']">
 					<marc:subfield code="c">
@@ -1345,7 +1349,9 @@
 			<xsl:with-param name="ind1">1</xsl:with-param>
 			<xsl:with-param name="subfields">
 				<marc:subfield code="a">
-					<xsl:value-of select="mods:namePart"/>
+					<xsl:call-template name="modsName">
+						<xsl:with-param name="namePart" select="mods:namePart"/>
+					</xsl:call-template>
 				</marc:subfield>
 				<!-- v3 termsofAddress -->
 				<xsl:for-each select="mods:namePart[@type='termsOfAddress']">
@@ -1496,7 +1502,9 @@
 					<xsl:with-param name="ind2"><xsl:call-template name="authorityInd"/></xsl:with-param>
 					<xsl:with-param name="subfields">
 						<marc:subfield code="a">
-							<xsl:value-of select="mods:namePart"/>
+							<xsl:call-template name="modsName">
+						<xsl:with-param name="namePart" select="mods:namePart"/>
+					</xsl:call-template>
 						</marc:subfield>
 						<!-- v3 termsofAddress -->
 						<xsl:for-each select="mods:namePart[@type='termsOfAddress']">
@@ -1532,7 +1540,9 @@
 					<xsl:with-param name="ind2"><xsl:call-template name="authorityInd"/></xsl:with-param>
 					<xsl:with-param name="subfields">
 						<marc:subfield code="a">
-							<xsl:value-of select="mods:namePart"/>
+							<xsl:call-template name="modsName">
+						<xsl:with-param name="namePart" select="mods:namePart"/>
+					</xsl:call-template>
 						</marc:subfield>
 						<xsl:for-each select="mods:namePart[position()>1]">
 							<marc:subfield code="a">
@@ -1558,7 +1568,9 @@
 					<xsl:with-param name="ind2"><xsl:call-template name="authorityInd"/></xsl:with-param>
 					<xsl:with-param name="subfields">
 						<marc:subfield code="a">
-							<xsl:value-of select="mods:namePart"/>
+							<xsl:call-template name="modsName">
+						<xsl:with-param name="namePart" select="mods:namePart"/>
+					</xsl:call-template>
 						</marc:subfield>
 						<!-- v3 role -->
 						<xsl:for-each select="mods:role/mods:roleTerm[@type='code']">
@@ -1737,7 +1749,9 @@
 					</xsl:with-param>
 					<xsl:with-param name="subfields">
 						<marc:subfield code="a">
-							<xsl:value-of select="mods:namePart"/>
+							<xsl:call-template name="modsName">
+						<xsl:with-param name="namePart" select="mods:namePart"/>
+					</xsl:call-template>
 						</marc:subfield>
 						<xsl:if test="@type='corporate'">
 							<xsl:for-each select="mods:namePart[position()>1]">
@@ -1891,6 +1905,21 @@
 		</xsl:call-template>
 	</xsl:template>
 -->
+	
+	<xsl:template name="modsName">
+		<xsl:param name="namePart"/>
+			<xsl:choose>
+				<xsl:when test="$namePart[@type='family'] and $namePart[@type='given']">
+					<xsl:value-of select="$namePart[@type='family']"/>
+					<xsl:text>, </xsl:text>
+					<xsl:value-of select="$namePart[@type='given']"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$namePart"/>
+				</xsl:otherwise>
+			</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template name="relatedItem76X-78X">
 		<xsl:for-each select="mods:titleInfo">
 			<xsl:for-each select="mods:title">
