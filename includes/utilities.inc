@@ -110,10 +110,10 @@ function islandora_marcxml_view(AbstractObject $object) {
 	'attributes' => array(
 		'class' => array(
 			'btn btn-primary'
+				)
 			)
 		)
-	)
-)),
+	)),
     'marc' => array(
       '#markup' => islandora_marcxml_transform_marc_to_html($object),
     ),
