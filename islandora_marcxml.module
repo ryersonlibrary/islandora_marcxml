@@ -45,6 +45,10 @@ function islandora_marcxml_permission() {
       'title' => t('View MARCXML metadata'),
       'description' => t('View MARCXML metadata'),
     ),
+    'submit marcxml form' => array(
+      'title' => t('Upload MARCXML records'),
+      'description' => t('Upload MARCXML records'),
+    ),
   );
 }
 
@@ -90,7 +94,7 @@ function islandora_marcxml_access_callback($object) {
  * Implements hook_islandora_ingest_steps_alter().
  */
 function islandora_marcxml_islandora_ingest_steps_alter(array &$steps, array &$form_state) {
-  if (isset($steps['xml_form_builder_metadata_step'])) {
+  if (isset($steps['xml_form_builder_metadata_step']) && user_access('submit marcxml form')) {
     $association = isset($steps['xml_form_builder_metadata_step']['args'][0]) ? $steps['xml_form_builder_metadata_step']['args'][0] : NULL;
     if (isset($association['dsid']) && $association['dsid'] == 'MODS') {
       $steps['islandora_marcxml_upload'] = array(

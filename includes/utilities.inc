@@ -106,9 +106,14 @@ function islandora_marcxml_populate_mods(AbstractObject $object, $file) {
  */
 function islandora_marcxml_view(AbstractObject $object) {
   return array(
-    'link' => array(
-      '#markup' => l(t('Download MARCXML'), "islandora/object/{$object->id}/download_mods_as_marcxml"),
-    ),
+    'link' => array('#markup' => l(t('Download MARCXML'), "islandora/object/{$object->id}/download_mods_as_marcxml", array(
+	'attributes' => array(
+		'class' => array(
+			'btn btn-primary'
+				)
+			)
+		)
+	)),
     'marc' => array(
       '#markup' => islandora_marcxml_transform_marc_to_html($object),
     ),
